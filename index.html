@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <h1>IFind Cinema</h1>
+        <input type="text" id="movieName" placeholder="Digite o nome do filme">
+        <button id="searchButton">Buscar </button>
+        <h2>Lista de filmes buscados</h2>
+        <div id="results">
+
+        </div>
+    </div>
+    <script>
+        let botao = document.querySelector('button');
+        let input = document.querySelector('input');
+        botao.addEventListener('click',()=>{
+            cineFind(input.value);
+        })
+        function cineFind(movieName)
+        {
+            const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=2dbca7a779fef19d8dc0acc77384df5a&query=${movieName}&language=pt-BR`;
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results.length > 0) {
+                        for(let i = 0 ; i < data.results.length;i++)
+                        {
+                            const movie = data.results[i];
+    
+                            document.getElementById('results').innerHTML +=
+                                `
+                            <h2>${movie.title}</h2>
+                            <p>${movie.overview}</p>
+                            <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
+                            `;
+                        }
+                    }
+                    else{
+                        document.getElementById('results').innerHTML +=
+                            `
+                        <h2>Filme não encontrado</h2>
+                        <p>Esse filme não existe</p>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfh0aWYwXLAt9VFLBzDwg4rLFHlK9P7p9H8g&s" alt="ERROR">
+                        `;
+                    }
+                })
+                .catch(error => {             
+                    console.error('Erro:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>
